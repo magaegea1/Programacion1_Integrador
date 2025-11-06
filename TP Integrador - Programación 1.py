@@ -26,16 +26,20 @@ print("Archivo de trabajo:", NOMBRE_ARCHIVO)
 # ******************* Funciones que trabajan directamente con el archivo csv **************************************
 def cargar_datos_desde_csv(nombre_archivo):
     """
-    Carga los datos de países desde un archivo CSV.
-    Valida formato y convierte tipos de datos.
-    Si el archivo no existe, lo crea con encabezado vacío.
+    Carga los datos de países desde un archivo CSV, validando estructura y contenido.
+
+    Si el archivo no existe, lo crea con encabezado vacío. 
+    Omite registros con errores de formato o valores no válidos, informando al usuario.
+
+    Cada país válido se transforma en un diccionario con claves normalizadas y se agrega a la lista.
 
     Parámetros:
-    - nombre_archivo: str, nombre del archivo CSV.
+    - nombre_archivo: str — nombre del archivo CSV.
 
     Retorno:
-    - lista_paises: list[dict]
+    - lista_paises: list[dict] — lista de países con datos limpios y validados.
     """
+
     lista_paises = []
     if not os.path.exists(nombre_archivo):
         with open(nombre_archivo, "w", newline="", encoding="utf-8") as archivo:
@@ -47,12 +51,11 @@ def cargar_datos_desde_csv(nombre_archivo):
     with open(nombre_archivo, newline="", encoding="utf-8") as archivo:
         lector = csv.DictReader(archivo)
         for fila in lector:
-            try:
+            if fila["Población"].strip().isdigit() and fila["Superficie en km²"].strip().isdigit():                
                 nombre = fila["Nombre"].strip().title()
-                poblacion = int(fila["Población"].strip())
-                superficie = int(fila["Superficie en km²"].strip())
+                poblacion = int(fila["Población"])
+                superficie = int(fila["Superficie en km²"])
                 continente = fila["Continente"].strip().title()
-
                 if poblacion > 0 and superficie > 0 and nombre and continente:
                     lista_paises.append({
                         "Nombre": nombre,
@@ -62,7 +65,7 @@ def cargar_datos_desde_csv(nombre_archivo):
                     })
                 else:
                     print("⚠️ Registro inválido, se omite:", fila)
-            except (ValueError, KeyError):
+            else:
                 print("⚠️ Error en registro CSV, se omite:", fila)
     return lista_paises
 
@@ -105,33 +108,24 @@ def guardar_datos_paises_en_csv(lista_paises):
 
 # Función para validar que se ingrese una cadena de texto que no esté vacía, limpiar y normalizar con title.
 
-# Función auxiliar:
-def es_numero(texto):
-    try:
-        float(texto)
-        return True
-    except ValueError:
-        return False
-
 # Función principal para validar y limpiar texto.
 def preparar_texto_valido():
     """
-    preparar_texto_valido() es una función que se ocupa de revisar que el texto ingresado por el usuario:
-    - No esté vacío
-    - Limpia los extremos para que no haya espacios ni saltos y elimina espacios extra que hayan internamente
-    - No sea un número
-    - Lo normaliza usando title() para que la primera letra de cada palabra sea mayúscula (se usará en nombres propios
-    de paises)
-    Esta función no recibe parámetros. Se llama cuando se espera que el usuario ingrese una cadena de texto 
-    por teclado.
-    Devuelve el texto validado y normalizado para ser usado como título en el catálogo.
-    """    
+    Valida y limpia el texto ingresado por el usuario para su uso como título en el catálogo.
+
+    La función:
+    - Verifica que la entrada no esté vacía ni sea numérica.
+    - Elimina espacios innecesarios y normaliza el formato con `.title()`.
+    - Se utiliza para nombres propios (por ejemplo, países).
+
+    No recibe parámetros. Devuelve una cadena validada y normalizada.
+    """
     while True:
         texto = " ".join(input("").strip().split()).title()
         if texto == "":
             print("\tDisculpe, la entrada no puede estar vacía, intente nuevamente: ", end="")
 
-        elif es_numero(texto):
+        elif texto.isdigit():
             print("\tDisculpe, no puede ser un número, intente nuevamente: ", end="")
   
         else:         
@@ -205,9 +199,16 @@ def preparar_pais_ya_existe(lista_paises, nuevo_pais):
 # Función para que el usuario elija continente, así no hay ambigüedades
 def preparar_continentes():
     """
-    Muestra una lista cerrada de continentes válidos y solicita al usuario que elija uno por número.
-    Devuelve el nombre del continente seleccionado.
+    Solicita al usuario que seleccione un continente desde una lista cerrada y validada.
+
+    La función:
+    - Muestra los continentes disponibles con numeración clara.
+    - Valida que la entrada sea numérica y esté dentro del rango permitido.
+    - Devuelve el nombre del continente seleccionado, normalizado.
+
+    No recibe parámetros. Devuelve una cadena con el continente elegido.
     """
+
     CONTINENTES_VALIDOS = [
         "Asia",
         "África",
@@ -226,14 +227,14 @@ def preparar_continentes():
         print("\n\tIndique el número del continente seleccionado: ", end="")
         entrada = input().strip()
 
-        try:
+        if entrada.isdigit():
             numero = int(entrada)
             if 1 <= numero <= len(CONTINENTES_VALIDOS):
                 return CONTINENTES_VALIDOS[numero - 1]
             else:
                 print("\tDisculpe, el número ingresado no está en el rango válido.")
-        except ValueError:
-            print("\tDisculpe, la opción ingresada no es válida, intente nuevamente...")
+        else:
+            print("\tDisculpe, opción inválida. Debe seleccionar el número de la opción deseada...")
             
 
 # Función para salir o seguir:

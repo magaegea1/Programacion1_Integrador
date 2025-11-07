@@ -99,7 +99,7 @@ def guardar_datos_paises_en_csv(lista_paises):
                 "Continente": pais["Continente"]
             })
 
-    print("\tEl archivo datos_países.csv ha sido actualizado correctamente")
+    print("\t✅ El archivo datos_países.csv ha sido actualizado correctamente")
     return 
 
 # ******************* Preparar los datos necesarios: *********************************************************
@@ -236,6 +236,21 @@ def preparar_continentes():
         else:
             print("\tDisculpe, opción inválida. Debe seleccionar el número de la opción deseada...")
             
+# Función para mostrar la lista
+def mostrar_lista(lista, mensaje):
+    """
+    Muestra en pantalla la lista de países 
+
+    Parámetros:
+    - Una lista (ordenada o filtrada) (list): lista de diccionarios con datos de países.
+    - Un mensaje para mostrar
+    """
+    print(mensaje)
+    for i, pais in enumerate(lista, start=1):
+        print(f"\t{i}. {pais['Nombre']}: \t{pais['Población']} habitantes,"
+              f"\t{pais['Superficie en km²']} Km², \ten {pais['Continente']}")
+
+
 
 # Función para salir o seguir:
 def salir_seguir(accion="continuar"):
@@ -320,7 +335,7 @@ def pedir_opcion_1_a_n(n):
         if opcion.isdigit() and 1<=int(opcion)<=n:
             return int(opcion)
         else:
-            print("Disculpe, pero la opción ingresada no es válida, intente nuevamente...")
+            print("\n\tDisculpe, pero la opción ingresada no es válida, intente nuevamente...")
 
 
 # ******************* Funciones de las Opciones del Menú: *********************************************************
@@ -715,6 +730,45 @@ def filtrar_paises(lista_paises):
 #******************* case 6 *******************
 # 6. Funciones para Ordenar
 
+#Menor a mayor y mayor a menor
+
+#Auxiliares para función siguiente
+def obtener_nombre(pais):
+    return preparar_texto_normalizado(pais["Nombre"])
+
+def obtener_continente(pais):
+    return preparar_texto_normalizado(pais["Continente"])
+
+
+# Función para ordenar de mayor a menor o al revés. 
+def ordenar_mayor_o_menor(lista, clave,n=None):
+    """
+    Ordena la lista de países según la clave indicada.
+    Permite elegir entre orden ascendente (1) y descendente (2).
+
+    Parámetros:
+    - lista (list): lista de diccionarios con datos de países.
+    - clave (str): campo del diccionario por el cual se desea ordenar.
+    - n (int): número de elementos a usar
+    """
+    print("\t\t1. De menor a mayor")
+    print("\t\t2. De mayor a menor")
+    print("\tSeleccione 1 o 2: ", end="")
+    ordenado = pedir_opcion_1_a_n(2)
+
+    # Si clave es string → usar itemgetter
+    if isinstance(clave, str):
+        lista_ordenada = sorted(lista, key=itemgetter(clave), reverse=(ordenado == 2))
+    else:
+        # Si clave es función → usarla directamente
+        lista_ordenada = sorted(lista, key=clave, reverse=(ordenado == 2))
+
+    if n is not None:
+        lista_ordenada = lista_ordenada[:n]
+
+    mostrar_lista(lista_ordenada, "\n\tLista ordenada:")
+
+
 # Ordenar por país
 def ordenar_por_pais(lista_paises):
     """
@@ -737,24 +791,13 @@ def ordenar_por_pais(lista_paises):
     opcion=pedir_opcion_1_a_n(2)
     if opcion==1:
         # Mostrar resultados finales
-        for i, pais in enumerate(sorted(lista_paises, key=obtener_nombre)):
-            print(
-                f"\t{i + 1}. {pais['Nombre']}: \t{pais['Población']} habitantes,"
-                f"\t{pais['Superficie en km²']} Km², \ten {pais['Continente']}"
-            )
-
+        n=None
+        ordenar_mayor_o_menor(lista_paises, obtener_nombre)
     else:
         print("\t¿Cuántos elementos desea ver?: ", end="")
         n=preparar_entero_positivo()
         # Mostrar resultados finales
-        print("\n\tLista ordenada:")
-        lista_ordenada = sorted(lista_paises, key=obtener_nombre)
-        for i, pais in enumerate(lista_ordenada[:n]):
-            print(
-                f"\t{i + 1}. {pais['Nombre']}: \t{pais['Población']} habitantes,"
-                f"\t{pais['Superficie en km²']} Km², \ten {pais['Continente']}"
-            )
-        print(f"\n\tSe han mostrado {min(n, len(lista_ordenada))} países ordenados.")
+        ordenar_mayor_o_menor(lista_paises, obtener_nombre,n)
 
 
 # Ordenar por Población
@@ -779,23 +822,12 @@ def ordenar_por_poblacion(lista_paises):
     opcion=pedir_opcion_1_a_n(2)
     if opcion==1:
         # Mostrar resultados finales
-        print("\n\tLista ordenada:")
-        for i, pais in enumerate(sorted(lista_paises, key=itemgetter("Población"))):
-            print(
-                f"\t{i + 1}. {pais['Población']} habitantes: \t{pais['Nombre']},"
-                f"\t{pais['Superficie en km²']} Km², \ten {pais['Continente']}"
-            )
+        ordenar_mayor_o_menor(lista_paises, "Población")
     else:
         print("\t¿Cuántos elementos desea ver?: ", end="")
         n=preparar_entero_positivo()
         # Mostrar resultados finales
-        print("\n\tLista ordenada:")
-        lista_ordenada = sorted(lista_paises, key=itemgetter("Población"))
-        for i, pais in enumerate(lista_ordenada[:n]):
-            print(
-                f"\t{i + 1}. {pais['Población']} habitantes: \t{pais['Nombre']},"
-                f"\t{pais['Superficie en km²']} Km², \ten {pais['Continente']}"
-            )
+        ordenar_mayor_o_menor(lista_paises, "Población",n)
 
 # Ordenar por Superficie
 def ordenar_por_superficie(lista_paises):
@@ -819,24 +851,13 @@ def ordenar_por_superficie(lista_paises):
     opcion=pedir_opcion_1_a_n(2)
     if opcion==1:
         # Mostrar resultados finales
-        print("\n\tLista ordenada:")
-        for i, pais in enumerate(sorted(lista_paises, key=itemgetter("Superficie en km²"))):
-            print(
-                f"\t{i + 1}. {pais['Superficie en km²']} Km²: \t{pais['Población']} habitantes,"
-                f"\t{pais['Nombre']}, \ten {pais['Continente']}"
-            )
+        ordenar_mayor_o_menor(lista_paises, "Superficie en km²")
     else:
         print("\t¿Cuántos elementos desea ver?: ", end="")
         n=preparar_entero_positivo()
         # Mostrar resultados finales
-        print("\n\tLista ordenada:")
-        lista_ordenada = sorted(lista_paises, key=itemgetter("Superficie en km²"))
-        for i, pais in enumerate(lista_ordenada[:n]):
-            print(
-                f"\t{i + 1}. {pais['Superficie en km²']} Km²: \t{pais['Población']} habitantes,"
-                f"\t{pais['Nombre']}, \ten {pais['Continente']}"
-            )
-        print(f"\n\tSe han mostrado {min(n, len(lista_ordenada))} países ordenados.")
+        ordenar_mayor_o_menor(lista_paises, "Superficie en km²",n)
+
 
 # Ordenar por continente
 def ordenar_por_continente(lista_paises):
@@ -860,23 +881,12 @@ def ordenar_por_continente(lista_paises):
     opcion=pedir_opcion_1_a_n(2)
     if opcion==1:
         # Mostrar resultados finales
-        print("\n\tLista ordenada:")
-        for i, pais in enumerate(sorted(lista_paises, key=itemgetter("Continente"))):
-            print(
-                f"\t{i + 1}. En {pais['Continente']}: \t{pais['Nombre']}: \t{pais['Población']} habitantes,"
-                f"\t{pais['Superficie en km²']} Km²"
-            )
+        ordenar_mayor_o_menor(lista_paises, obtener_continente)
     else:
         print("\t¿Cuántos elementos desea ver?: ", end="")
         n=preparar_entero_positivo()
         # Mostrar resultados finales
-        print("\n\tLista ordenada:")
-        lista_ordenada = sorted(lista_paises, key=itemgetter("Continente"))
-        for i, pais in enumerate(lista_ordenada[:n]):
-            print(
-                f"\t{i + 1}. En {pais['Continente']}: \t{pais['Nombre']}: \t{pais['Población']} habitantes,"
-                f"\t{pais['Superficie en km²']} Km²"
-            )
+        ordenar_mayor_o_menor(lista_paises, obtener_continente,n)
 
 # Ordenar lista completa:
 def ordenar_paises(lista_paises):
@@ -1013,7 +1023,7 @@ def buscar_maximo_filtrado(lista, clave):
     pais_max = buscar_maximo(lista_filtrada, clave)
 
     if pais_max:
-        print(f"\n\tPaís con mayor {clave.lower()}: {pais_max['Nombre']} ({pais_max[clave]})")
+        print(f"\n\t✅ País con mayor {clave.lower()}: {pais_max['Nombre']} ({pais_max[clave]})")
 
     return pais_max
 
@@ -1070,10 +1080,35 @@ def buscar_minimo_filtrado(lista, clave):
 
     pais_min = buscar_minimo(lista_filtrada, clave)
     if pais_min:
-        print(f"\n\tPaís con menor {clave.lower()}: {pais_min['Nombre']} ({pais_min[clave]})")
+        print(f"\n\t✅ País con menor {clave.lower()}: {pais_min['Nombre']} ({pais_min[clave]})")
 
     return pais_min
 
+# Función: cantidad de países por continente
+def cantidad_paises_por_continente(lista_paises):
+    """
+    Calcula y muestra la cantidad de países por continente.
+
+    Parámetros:
+    - lista_paises: list[dict]
+
+    Retorno:
+    - dict: continentes como claves y cantidad de países como valores.
+    """
+    if not lista_paises:
+        print("\tEl catálogo de países está vacío.")
+        return {}
+
+    conteo = {}
+    for pais in lista_paises:
+        continente = pais["Continente"]
+        conteo[continente] = conteo.get(continente, 0) + 1
+
+    print("\n\t✅ Cantidad de países por continente:")
+    for continente, cantidad in conteo.items():
+        print(f"\t{continente}: {cantidad} países")
+
+    return conteo
 
 # Función central estadística
 def mostrar_estadisticas(lista_paises):
@@ -1097,32 +1132,35 @@ def mostrar_estadisticas(lista_paises):
     - No devuelve valores. Imprime las estadísticas por pantalla.
     """
     while True:
-        print("\n\t7. 📊 ¿Qué estadística desea calcular?")
-        print("\t1. Promedio de población")
+        print("\n\t7. ¿Qué estadística desea calcular?")
+        print("\n\t1. Promedio de población")
         print("\t2. Promedio de superficie")
         print("\t3. País con mayor población")
         print("\t4. País con menor población")
         print("\t5. País con mayor superficie")
         print("\t6. País con menor superficie")
-        print("\t7. Volver al menú principal")
-        opcion = pedir_opcion_1_a_n(7)
-
-        if opcion == 7:
-            print("\n\tVolviendo al menú principal...")
-            break
-        elif opcion == 1:
-            calcular_promedio_filtrado(lista_paises, "Población")
-        elif opcion == 2:
-            calcular_promedio_filtrado(lista_paises, "Superficie en km²")
-        elif opcion == 3:
-            buscar_maximo_filtrado(lista_paises, "Población")
-        elif opcion == 4:
-            buscar_minimo_filtrado(lista_paises, "Población")
-        elif opcion == 5:
-            buscar_maximo_filtrado(lista_paises, "Superficie en km²")
-        elif opcion == 6:
-            buscar_minimo_filtrado(lista_paises, "Superficie en km²")
-
+        print("\t7. Cantidad de países por continente")
+        print("\t8. Volver al menú principal")
+        opcion = pedir_opcion_1_a_n(8)
+        
+        match opcion:
+            case 1:
+                calcular_promedio_filtrado(lista_paises, "Población")
+            case 2:
+                calcular_promedio_filtrado(lista_paises, "Superficie en km²")
+            case 3:
+                buscar_maximo_filtrado(lista_paises, "Población")
+            case 4: 
+                buscar_minimo_filtrado(lista_paises, "Población")
+            case 5:
+                buscar_maximo_filtrado(lista_paises, "Superficie en km²")
+            case 6:
+                buscar_minimo_filtrado(lista_paises, "Superficie en km²")
+            case 7:
+                cantidad_paises_por_continente(lista_paises)
+            case 8:
+                print("\n\tVolviendo al menú principal...")
+                break
 
 #******************* case 8 *******************
 # 8. Función para eliminar un país del catálogo, esta opción es extra a las consignas, se considera 

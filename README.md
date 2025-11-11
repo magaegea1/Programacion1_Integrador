@@ -158,7 +158,7 @@ El programa utiliza solo módulos estándar de Python:
 4. Ejecutar el programa desde consola:
 
    ```bash
-   python "TPI - Programación 1 - Código.py
+   python "TPI - Programación 1 - Código.py"
    ```
  
 5. Seguir las instrucciones del menú interactivo.

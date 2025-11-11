@@ -182,8 +182,9 @@ El programa utiliza solo módulos estándar de Python:
 
 ## 🌐 Repositorio y exposición
 
-🔗 **Repositorio GitHub:** [https://github.com/magaegea1/Programacion1_Integrador] 
-🎥 **Video explicativo:** [https://drive.google.com/file/d/1onQlgumxodV6bT3sGvlo2wC2vRD1zWS5/view?usp=sharing]
+🔗 Repositorio GitHub: [https://github.com/magaegea1/Programacion1_Integrador]  
+🎥 Video explicativo: [https://drive.google.com/file/d/1onQlgumxodV6bT3sGvlo2wC2vRD1zWS5/view?usp=sharing]
+
 
 ---
 

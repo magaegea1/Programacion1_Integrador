@@ -153,7 +153,7 @@ El programa utiliza solo módulos estándar de Python:
 ## 💾 Instrucciones de ejecución
 
 1. Asegurarse de tener **Python 3.x** instalado.
-2. Descargar el archivo `main.py` (o el código del repositorio).
+2. Descargar el archivo `TPI - Programación 1 - Código.py` (o el código del repositorio).
 3. Colocar el archivo `datos_paises.csv` en la misma carpeta.
 4. Ejecutar el programa desde consola:
 

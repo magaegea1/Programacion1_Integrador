@@ -158,9 +158,9 @@ El programa utiliza solo módulos estándar de Python:
 4. Ejecutar el programa desde consola:
 
    ```bash
-   python main.py
+   python "TPI - Programación 1 - Código.py
    ```
-
+ 
 5. Seguir las instrucciones del menú interactivo.
 
 ---
@@ -169,10 +169,12 @@ El programa utiliza solo módulos estándar de Python:
 
 ```
 📁 TPI_Programacion1/
-├── 📄 main.py
+├── 📁 Capturas de Pantalla
+├── 📄 Diagrama del flujo del programa.png
+├── 📘 Programación 1 - TPI.pdf
+├── 📄 TPI - Programación 1 - Código.py
+├── 🎥 Video - Programación 1 - TPI.pdf: Guía de Países TPI Programación 1 -.mp4
 ├── 📄 datos_paises.csv
-├── 📘 Programación 1 - TPI.docx.pdf
-├── 🎥 video_explicativo.mp4
 └── 📄 README.md
 ```
 
